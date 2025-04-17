@@ -8,19 +8,19 @@ VALUES
     ('Urinalysis', 'Analyzes urine for various substances', 800.00, 'Urine Test', 'Collect first morning urine sample', 24, 'Urine', FALSE, NOW(), NOW(), TRUE);
 
 -- Insert users (passwords are 'password123' encoded with BCrypt)
-INSERT INTO users (username, password, email, role, created_at, updated_at)
-VALUES 
-('admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', 'admin@example.com', 'ADMIN', NOW(), NOW()),
-('employee1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', 'employee1@example.com', 'EMPLOYEE', NOW(), NOW()),
-('employee2', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', 'employee2@example.com', 'EMPLOYEE', NOW(), NOW()),
-('patient1', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', 'patient1@example.com', 'PATIENT', NOW(), NOW()),
-('patient2', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', 'patient2@example.com', 'PATIENT', NOW(), NOW());
+INSERT INTO users (first_name, last_name, email, password, phone, role, email_verified, created_at, updated_at, active)
+VALUES
+    ('Admin', 'User', 'admin@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', '+1234567890', 'ADMIN', true, NOW(), NOW(), true),
+    ('Employee', 'One', 'employee1@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', '+1234567891', 'LAB_EMPLOYEE', true, NOW(), NOW(), true),
+    ('Employee', 'Two', 'employee2@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', '+1234567892', 'LAB_EMPLOYEE', true, NOW(), NOW(), true),
+    ('Patient', 'One', 'patient1@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', '+1234567893', 'PATIENT', true, NOW(), NOW(), true),
+    ('Patient', 'Two', 'patient2@example.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iAt6Z5EHsM8', '+1234567894', 'PATIENT', true, NOW(), NOW(), true);
 
 -- Insert appointments
-INSERT INTO appointments (appointment_number, patient_id, lab_test_id, employee_id, appointment_date, status, created_at, updated_at)
-VALUES 
-('APT001', 4, 1, 2, NOW() + INTERVAL '1 day', 'SCHEDULED', NOW(), NOW()),
-('APT002', 4, 2, 2, NOW() + INTERVAL '2 days', 'SCHEDULED', NOW(), NOW()),
-('APT003', 5, 3, 3, NOW() + INTERVAL '3 days', 'SCHEDULED', NOW(), NOW()),
-('APT004', 5, 4, 3, NOW() - INTERVAL '1 day', 'COMPLETED', NOW(), NOW()),
-('APT005', 4, 5, 2, NOW() - INTERVAL '2 days', 'CANCELLED', NOW(), NOW()); 
+INSERT INTO appointments (appointment_number, patient_id, test_id, assigned_employee_id, appointment_date_time, status, amount, paid, created_at, updated_at)
+VALUES
+    ('APT001', 4, 1, 2, NOW() + INTERVAL '1 day', 'PENDING', 1500.00, false, NOW(), NOW()),
+    ('APT002', 4, 2, 2, NOW() + INTERVAL '2 days', 'CONFIRMED', 2000.00, false, NOW(), NOW()),
+    ('APT003', 5, 3, 3, NOW() + INTERVAL '3 days', 'IN_PROGRESS', 1800.00, false, NOW(), NOW()),
+    ('APT004', 5, 4, 3, NOW() - INTERVAL '1 day', 'COMPLETED', 2500.00, true, NOW(), NOW()),
+    ('APT005', 4, 5, 2, NOW() - INTERVAL '2 days', 'CANCELLED', 800.00, false, NOW(), NOW());
