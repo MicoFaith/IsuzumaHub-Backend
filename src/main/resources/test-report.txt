@@ -1,0 +1,23 @@
+DIAGNOSTIC LAB REPORT
+====================
+
+Patient ID: 4
+Appointment Number: APT001
+Test: Complete Blood Count (CBC)
+Date: 2024-04-17
+
+Test Results:
+------------
+1. White Blood Cells (WBC): 7.5 x10^9/L (Normal Range: 4.5-11.0)
+2. Red Blood Cells (RBC): 5.0 x10^12/L (Normal Range: 4.5-5.5)
+3. Hemoglobin (Hgb): 14.2 g/dL (Normal Range: 13.5-17.5)
+4. Hematocrit (Hct): 42% (Normal Range: 41-50)
+5. Platelets: 250 x10^9/L (Normal Range: 150-450)
+
+Conclusion:
+----------
+All parameters are within normal range. No abnormalities detected.
+
+Signed by:
+Dr. John Smith
+Lab Technician 
