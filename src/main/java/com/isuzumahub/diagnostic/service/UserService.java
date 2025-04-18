@@ -20,4 +20,8 @@ public interface UserService {
     String generatePasswordResetToken(String email);
     String generateEmailVerificationToken(String email);
     User getCurrentUser();
+    UserDto createUser(UserDto userDto);
+    boolean existsByEmail(String email);
+    User getUserByEmail(String email);
+    UserDto convertToDto(User user);
 } 
