@@ -177,4 +177,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userPrincipal.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", userPrincipal.getId()));
     }
+
+    @Override
+    public UserDto createUser(UserDto userDto) {
+        return null;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return false;
+    }
+
+    @Override
+    public UserDto convertToDto(User user) {
+        return null;
+    }
 } 

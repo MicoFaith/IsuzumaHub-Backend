@@ -22,6 +22,5 @@ public interface UserService {
     User getCurrentUser();
     UserDto createUser(UserDto userDto);
     boolean existsByEmail(String email);
-    User getUserByEmail(String email);
     UserDto convertToDto(User user);
 } 
