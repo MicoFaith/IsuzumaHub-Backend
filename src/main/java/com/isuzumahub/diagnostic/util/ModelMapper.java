@@ -12,18 +12,15 @@ import org.springframework.stereotype.Component;
 public class ModelMapper {
 
     public UserDto toUserDto(User user) {
-        if (user == null) return null;
-        
         UserDto dto = new UserDto();
         dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setEmail(user.getEmail());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
-        dto.setEmail(user.getEmail());
-        dto.setPhone(user.getPhone());
-        dto.setAddress(user.getAddress());
+        dto.setPhoneNumber(user.getPhoneNumber());
         dto.setRole(user.getRole());
-        dto.setEmailVerified(user.isEmailVerified());
-        
+        dto.setEnabled(user.isEnabled());
         return dto;
     }
     
@@ -35,7 +32,7 @@ public class ModelMapper {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail());
-        user.setPhone(dto.getPhone());
+        user.setPhone(dto.getPhoneNumber());
         user.setAddress(dto.getAddress());
         user.setRole(dto.getRole());
         

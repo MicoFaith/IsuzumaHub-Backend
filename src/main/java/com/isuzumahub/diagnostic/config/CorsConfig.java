@@ -14,32 +14,27 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Allow specific origin (your frontend)
+        // Allow frontend origin
         config.addAllowedOrigin("http://localhost:3000");
         
-        // Allow specific headers
-        config.addAllowedHeader("Authorization");
-        config.addAllowedHeader("Content-Type");
-        config.addAllowedHeader("Accept");
-        config.addAllowedHeader("Origin");
-        config.addAllowedHeader("X-Requested-With");
+        // Allow all necessary headers
+        config.addAllowedHeader("*");
         
-        // Allow specific methods
-        config.addAllowedMethod("GET");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("PUT");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("OPTIONS");
+        // Allow all necessary methods
+        config.addAllowedMethod("*");
         
         // Allow credentials
         config.setAllowCredentials(true);
         
-        // Expose the Authorization header
+        // Expose necessary headers
         config.addExposedHeader("Authorization");
+        config.addExposedHeader("Content-Type");
+        config.addExposedHeader("Accept");
         
         // Set max age for preflight requests
         config.setMaxAge(3600L);
         
+        // Apply to all paths
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class SignupRequest {
+public class RegisterRequest {
     @NotBlank(message = "Username is required")
     private String username;
     

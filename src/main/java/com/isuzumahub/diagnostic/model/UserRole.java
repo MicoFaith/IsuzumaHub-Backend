@@ -1,4 +1,4 @@
-package com.isuzumahub.diagnostic.model.enums;
+package com.isuzumahub.diagnostic.model;
 
 public enum UserRole {
     ROLE_ADMIN,
