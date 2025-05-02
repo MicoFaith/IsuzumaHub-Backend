@@ -1,7 +1,11 @@
 package com.isuzumahub.diagnostic.service;
 
 import com.isuzumahub.diagnostic.dto.SignUpRequest;
+import com.isuzumahub.diagnostic.model.Admin;
+import com.isuzumahub.diagnostic.model.Employee;
 import com.isuzumahub.diagnostic.model.User;
+import com.isuzumahub.diagnostic.repository.AdminRepository;
+import com.isuzumahub.diagnostic.repository.EmployeeRepository;
 import com.isuzumahub.diagnostic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +19,12 @@ public class AuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -57,7 +67,28 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+    public Object findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user != null) {
+            return user;
+        }
+        Admin admin = adminRepository.findById(email).orElse(null);
+        if (admin != null) {
+            return admin;
+        }
+        Employee employee = employeeRepository.findById(email).orElse(null);
+        return employee;
+    }
+
+    public boolean authenticate(String email, String password) {
+        Object user = findUserByEmail(email);
+        if (user == null) {
+            return false;
+        }
+
+        String storedPassword = user instanceof User ? ((User) user).getPassword() :
+                user instanceof Admin ? ((Admin) user).getPassword() :
+                        ((Employee) user).getPassword();
+        return passwordEncoder.matches(password, storedPassword);
     }
 }

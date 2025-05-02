@@ -1,18 +1,20 @@
 package com.isuzumahub.diagnostic.config;
 
-import com.isuzumahub.diagnostic.repository.UserRepository;
+import com.isuzumahub.diagnostic.service.AuthService;
+import com.isuzumahub.diagnostic.model.User;
+import com.isuzumahub.diagnostic.model.Admin;
+import com.isuzumahub.diagnostic.model.Employee;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -27,39 +29,38 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> {
-            System.out.println("[DEBUG] Attempting to load user by email: " + username);
-            return userRepository.findByEmail(username)
-                    .map(user -> {
-                        System.out.println("[DEBUG] User found: " + user.getEmail() + ", encoded password: " + user.getPassword());
-                        return new org.springframework.security.core.userdetails.User(
-                                user.getEmail(),
-                                user.getPassword(),
-                                user.getRoles().stream()
-                                        .map(role -> new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role))
-                                        .toList());
-                    })
-                    .orElseThrow(() -> {
-                        System.out.println("[DEBUG] User not found with email: " + username);
-                        throw new UsernameNotFoundException("User not found with email: " + username);
-                    });
-        };
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService((username) -> {
+            Object user = authService.findUserByEmail(username);
+            if (user == null) {
+                return null;
+            }
+            String password = user instanceof User ? ((User) user).getPassword() :
+                    user instanceof Admin ? ((Admin) user).getPassword() :
+                            ((Employee) user).getPassword();
+            String role = user instanceof User ? "USER" :
+                    user instanceof Admin ? "ADMIN" : "EMPLOYEE";
+            return new org.springframework.security.core.userdetails.User(
+                    username,
+                    password,
+                    List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority("ROLE_" + role))
+            );
+        });
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManagerBean(HttpSecurity http, UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) throws Exception {
-        AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authBuilder
-                .userDetailsService(userDetailsService)
-                .passwordEncoder(passwordEncoder);
-        return authBuilder.build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -81,15 +82,19 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/signup", "/auth", "/auth/login", "/auth/forgot-password").permitAll()
-                        .requestMatchers("/dashboard").authenticated()
-                        .anyRequest().authenticated())
+                        .requestMatchers("/auth/signup", "/auth/login", "/auth/admin-login", "/auth/employee-login", "/auth/forgot-password").permitAll()
+                        .requestMatchers("/dashboard").hasRole("USER")
+                        .requestMatchers("/dashboard/admin").hasRole("ADMIN")
+                        .requestMatchers("/dashboard/employee").hasRole("EMPLOYEE")
+                        .anyRequest().authenticated()
+                )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/auth")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .permitAll())
+                        .permitAll()
+                )
                 .addFilterAfter((request, response, chain) -> {
                     System.out.println("[DEBUG] Session ID in request: " + ((jakarta.servlet.http.HttpServletRequest) request).getSession().getId());
                     chain.doFilter(request, response);
