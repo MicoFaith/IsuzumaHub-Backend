@@ -14,13 +14,13 @@ public class User {
     private String fullName;
     private String mobileNumber;
     private String password;
-    private Set<String> roles;
+    private String roles;
 
     // Default constructor
     public User() {}
 
     // Parameterized constructor
-    public User(String fullName, String email, String mobileNumber, String password, Set<String> roles) {
+    public User(String fullName, String email, String mobileNumber, String password, String roles) {
         this.fullName = fullName;
         this.email = email;
         this.mobileNumber = mobileNumber;
@@ -37,6 +37,6 @@ public class User {
     public void setMobileNumber(String mobileNumber) { this.mobileNumber = mobileNumber; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-    public Set<String> getRoles() { return roles; }
-    public void setRoles(Set<String> roles) { this.roles = roles; }
+    public String getRoles() { return roles; }
+    public void setRoles(String roles) { this.roles = roles; }
 }

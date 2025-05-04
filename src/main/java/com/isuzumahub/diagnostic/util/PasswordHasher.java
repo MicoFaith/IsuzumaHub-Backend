@@ -7,5 +7,6 @@ public class PasswordHasher {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("Hash for admin123: " + encoder.encode("admin123"));
         System.out.println("Hash for employee123: " + encoder.encode("employee123"));
+        System.out.println("Hash for dean: " + encoder.encode("employee123"));
     }
 }

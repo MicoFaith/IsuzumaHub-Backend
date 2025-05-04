@@ -2,6 +2,10 @@ package com.isuzumahub.diagnostic.repository;
 
 import com.isuzumahub.diagnostic.model.Admin;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-public interface AdminRepository extends JpaRepository<Admin, String> {
+@Repository
+public interface AdminRepository extends JpaRepository<Admin, Long> {
+    Optional<Admin> findByEmail(String email);
 }
